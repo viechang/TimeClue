@@ -1,0 +1,7 @@
+[package]
+name = "test"
+version = "0.1.0"
+authors = ["vie"]
+
+[dependencies]
+byteorder = "1.2.3"
