@@ -1,40 +1,31 @@
-extern crate byteorder;
+#[macro_use]
+extern crate lazy_static;
 
-use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
-use std::io;
-
-#[derive(Default, PartialEq, Debug)]
-struct Payload {
-    kind: u8,
-    value: u16,
+fn say_what(name: &str, func: fn(&str)) {
+    func(name);
 }
 
-fn run() -> io::Result<()> {
-    let original_payload = Payload::default();
-    let mut decoded_payload = Payload::default();
-
-    let encoded_bytes = original_payload.encode()?;
-    decoded_payload.decode(&encoded_bytes)?;
-
-    assert_eq!(original_payload, decoded_payload);
-    Ok(())
+fn test(string: &str) {
+    println!("{}", string);
 }
 
-impl Payload {
-    fn encode(&self) -> io::Result<Vec<u8>> {
-        let mut bytes = vec![];
-        bytes.write_u8(self.kind)?;
-        bytes.write_u16::<LittleEndian>(self.value)?;
-        Ok(bytes)
-    }
+fn foo(_: &str) {
+    println!("foobar.");
+}
 
-    fn decode(& mut self, mut bytes: &[u8]) -> io::Result<()> {
-        self.kind = bytes.read_u8()?;
-        self.value = bytes.read_u16::<LittleEndian>()?;
-        Ok(())
-    }
+lazy_static!{
+    static ref VEC: Vec<(&'static str, fn(&str))> = vec![
+        ("Hello, Rust!", test),
+        ("null", foo)
+    ];
 }
 
 fn main() {
-    let _ = run();
+//    let vec: Vec<(&str, fn(&str))> = vec![
+//        ("Hello, Rust!", test),
+//        ("null", foo)
+//    ];
+    for i in VEC.iter() {
+        say_what(i.0, i.1);
+    }
 }

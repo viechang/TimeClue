@@ -5,3 +5,4 @@ authors = ["vie"]
 
 [dependencies]
 byteorder = "1.2.3"
+lazy_static = "1.0"
